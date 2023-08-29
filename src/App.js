@@ -1,25 +1,140 @@
-import logo from './logo.svg';
-import './App.css';
+/* src/App.js */
 
-function App() {
+// Reactと関連ライブラリをインポートする
+import React, { useEffect, useState } from "react";
+// import Amplify, { API, graphqlOperation } from "aws-amplify";
+
+// GraphQLのmutationとqueryをインポートする
+// import { createTodo } from "./graphql/mutations";
+// import { listTodos } from "./graphql/queries";
+
+// AWS Amplifyの設定を読み込む
+// import awsExports from "./aws-exports";
+// Amplify.configure(awsExports);
+
+// 初期状態を定義する
+const initialState = { name: "", description: "" };
+
+// アプリケーションのメインコンポーネントを定義する
+const App = () => {
+  // ステート変数を定義する
+  const [formState, setFormState] = useState(initialState);
+  // const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState([]);
+
+  // ページが読み込まれた時に実行される処理を定義する
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  // フォームの入力値を更新する関数を定義する
+  function setInput(key, value) {
+    setFormState({ ...formState, [key]: value });
+  }
+
+  // Todoリストを取得する関数を定義する
+  async function fetchTodos() {
+    try {
+      // // GraphQLのqueryを実行して、Todoリストを取得する
+      // const todoData = await API.graphql(graphqlOperation(listTodos));
+      // const todos = todoData.data.listTodos.items;
+      // // 取得したTodoリストをステート変数にセットする
+      // setTodos(todos);
+      // // 取得結果をブラウザのログに出力する(デバッグ用)
+      // console.table(todos);
+      const todos = [
+        {
+          name: "bbb",
+          description: "bbb",
+        },
+        {
+          name: "aaa",
+          description: "aaa",
+        },
+      ];
+      setTodos(todos);
+    } catch (err) {
+      console.log("error fetching todos");
+    }
+  }
+
+  // Todoを追加する関数を定義する
+  async function addTodo() {
+    try {
+      // バリデーションチェックを行う
+      if (!formState.name || !formState.description) return;
+      // 入力されたTodoを作成する
+      const todo = { ...formState };
+      // ステート変数にTodoを追加する
+      setTodos([...todos, todo]);
+      // フォームの入力値を初期化する
+      setFormState(initialState);
+      // GraphQLのmutationを実行して、Todoを作成する
+      // await API.graphql(graphqlOperation(createTodo, { input: todo }));
+    } catch (err) {
+      console.log("error creating todo:", err);
+    }
+  }
+
+  // JSXを返す
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={styles.container}>
+      <h2>Amplify Todos</h2>
+      <input
+        onChange={(event) => setInput("name", event.target.value)}
+        style={styles.input}
+        value={formState.name}
+        placeholder="Name"
+        aria-label="name"
+      />
+      <input
+        onChange={(event) => setInput("description", event.target.value)}
+        style={styles.input}
+        value={formState.description}
+        placeholder="Description"
+        aria-label="description"
+      />
+      <button style={styles.button} onClick={addTodo} id="createTodoButton">
+        Create Todo
+      </button>
+      {todos.map((todo, index) => (
+        <div key={todo.id ? todo.id : index} style={styles.todo}>
+          <p style={styles.todoName}>{todo.name}</p>
+          <p style={styles.todoDescription}>{todo.description}</p>
+        </div>
+      ))}
     </div>
   );
-}
+};
 
+// スタイルを定義する
+const styles = {
+  container: {
+    width: 400,
+    margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    padding: 20,
+  },
+  todo: { marginBottom: 15 },
+  input: {
+    border: "none",
+    backgroundColor: "#ddd",
+    marginBottom: 10,
+    padding: 8,
+    fontSize: 18,
+  },
+  todoName: { fontSize: 20, fontWeight: "bold" },
+  todoDescription: { marginBottom: 0 },
+  button: {
+    backgroundColor: "black",
+    color: "white",
+    outline: "none",
+    fontSize: 18,
+    padding: "12px 0px",
+  },
+};
+
+// アプリケーションのメインコンポーネントをエクスポートする
 export default App;
