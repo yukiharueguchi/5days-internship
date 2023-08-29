@@ -40,19 +40,47 @@ const App = () => {
       // const todos = todoData.data.listTodos.items;
       // // 取得したTodoリストをステート変数にセットする
       // setTodos(todos);
-      // // 取得結果をブラウザのログに出力する(デバッグ用)
-      // console.table(todos);
+
+      // init todos
       const todos = [
         {
           name: "bbb",
           description: "bbb",
         },
         {
+          name: "あああ",
+          description: "あああ",
+        },
+        {
           name: "aaa",
           description: "aaa",
         },
+        {
+          name: "Aaa",
+          description: "Aaa",
+        },
       ];
-      setTodos(todos);
+
+      // ソート
+      const sortedTodos = todos.sort((a, b) => {
+        // const nameA = a.name.toUpperCase(); // 大文字と小文字を無視する
+        // const nameB = b.name.toUpperCase(); // 大文字と小文字を無視する
+        const nameA = a.name; // 大文字と小文字を無視する
+        const nameB = b.name; // 大文字と小文字を無視する
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        // 名前が等しい
+        return 0;
+      });
+      setTodos(sortedTodos);
+
+      // 取得結果をブラウザのログに出力する(デバッグ用)
+      console.table(todos);
     } catch (err) {
       console.log("error fetching todos");
     }
