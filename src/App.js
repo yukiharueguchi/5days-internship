@@ -21,11 +21,20 @@ const App = () => {
   const [formState, setFormState] = useState(initialState);
   // const [todos, setTodos] = useState([]);
   const [todos, setTodos] = useState([]);
+  const [canClick, setCanClick] = useState(false);
 
   // ページが読み込まれた時に実行される処理を定義する
   useEffect(() => {
     fetchTodos();
   }, []);
+
+  useEffect(() => {
+    if (!formState.name || !formState.description) {
+      setCanClick(false);
+    } else {
+      setCanClick(true);
+    }
+  }, [formState]);
 
   // フォームの入力値を更新する関数を定義する
   function setInput(key, value) {
@@ -91,6 +100,7 @@ const App = () => {
     try {
       // バリデーションチェックを行う
       if (!formState.name || !formState.description) return;
+      // クリックできるようにする
       // 入力されたTodoを作成する
       const todo = { ...formState };
       // ステート変数にTodoを追加する
@@ -122,9 +132,28 @@ const App = () => {
         placeholder="Description"
         aria-label="description"
       />
-      <button style={styles.button} onClick={addTodo} id="createTodoButton">
+      {canClick ? (
+        <button style={styles.button} onClick={addTodo} id="createTodoButton">
+          Create Todo
+        </button>
+      ) : (
+        <button
+          style={styles.falseButton}
+          onClick={addTodo}
+          id="createTodoButton"
+          disabled
+        >
+          Create Todo
+        </button>
+      )}
+      {/* <button
+        style={styles.falseButton}
+        onClick={addTodo}
+        id="createTodoButton"
+        disabled
+      >
         Create Todo
-      </button>
+      </button> */}
       {todos.map((todo, index) => (
         <div key={todo.id ? todo.id : index} style={styles.todo}>
           <p style={styles.todoName}>{todo.name}</p>
@@ -157,6 +186,13 @@ const styles = {
   todoDescription: { marginBottom: 0 },
   button: {
     backgroundColor: "black",
+    color: "white",
+    outline: "none",
+    fontSize: 18,
+    padding: "12px 0px",
+  },
+  falseButton: {
+    backgroundColor: "gray",
     color: "white",
     outline: "none",
     fontSize: 18,
